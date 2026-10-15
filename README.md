@@ -29,21 +29,32 @@ skills/
 
 ## 安装到本机
 
-把 skill 目录复制到本机 skill 根目录即可：
+Agent 发现 skill 的位置是**扁平的** `<skill 根>\<skill 名>\SKILL.md`；本仓库按类别分了两层，
+所以装的时候需要在中间做一次「扁平化」——用仓库自带的安装脚本，它会给每个 skill 在目标根下
+建一个**目录联接 / 符号链接**，指向仓库里的实际目录。这样改仓库即生效，两端不会分叉。
 
 ```bash
-# 复制单个 skill
-cp -r engineering/sticker-to-svg ~/.minimax/skills/
+# Windows（PowerShell）—— 默认装到 %USERPROFILE%\.codex\skills
+.\install.ps1
 
-# Windows PowerShell
-Copy-Item -Recurse engineering\sticker-to-svg "$env:USERPROFILE\.minimax\skills\"
+# 指定目标根目录
+.\install.ps1 -Target D:\Codex\home\skills
+
+# 跨文件系统、目标不支持联接时：改用复制（注意不再自动同步）
+.\install.ps1 -Copy
 ```
-
-或者整个收藏库一起克隆：
 
 ```bash
-git clone https://github.com/AltairCardinal/skills.git ~/.minimax/skills/
+# macOS / Linux —— 默认装到 $HOME/.codex/skills
+./install.sh
+./install.sh /path/to/skills
+COPIES=1 ./install.sh      # 复制而非链接
 ```
+
+> **注意**：`~/.minimax/skills/` 这样的「各自为政」目录**两个运行时都不扫**。
+> 以 Codex 为例，它只看 `~/.codex/skills/<名字>/SKILL.md`（你的 `~/.codex` 本身是个指向
+> `D:\Codex\home` 的目录联接，真实位置是 `D:\Codex\home\skills`），MiniMax Code 读同一处，
+> 所以两边都能发现。装好后若新 skill 没出现，重启对应 agent 会话即可刷新。
 
 ## 新增 skill
 
@@ -52,7 +63,8 @@ git clone https://github.com/AltairCardinal/skills.git ~/.minimax/skills/
    - `description` 决定什么请求会触发它，写清**何时该用**、**何时不该用**
 3. 附带文件放 `scripts/` / `references/` / `assets/` 子目录
 4. 在本文件索引表里加一行
-5. 提交 PR
+5. 跑一次 `install.ps1` / `install.sh` 挂到本机
+6. 提交 PR
 
 ## 约定
 

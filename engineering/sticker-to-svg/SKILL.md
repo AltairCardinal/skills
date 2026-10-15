@@ -17,14 +17,16 @@ description: >
 
 ## 用法
 
-脚本位于**本 skill 目录**的 `scripts/` 下。两种常见位置：
+脚本位于**本 skill 目录**的 `scripts/` 下。装到 agent 后通常在：
 
 ```bash
-# 本机安装（把 S 指向本机 skill 目录下的 scripts）
-S=~/.minimax/skills/sticker-to-svg/scripts
-# Windows: $S="$env:USERPROFILE\.minimax\skills\sticker-to-svg\scripts"
+# 已安装到 skill 根（Codex 与 MiniMax Code 共用此路径）
+S=~/.codex/skills/sticker-to-svg/scripts
+# Windows: $S="$env:USERPROFILE\.codex\skills\sticker-to-svg\scripts"
+# 若 $env:USERPROFILE\.codex 本身是目录联接，真实位置可能是 D:\Codex\home\skills\...
 
-# 若是从 skills 收藏库克隆而来，则为 <repo>/engineering/sticker-to-svg/scripts
+# 直接从 skills 收藏库运行则用仓库内路径
+S=<repo>/engineering/sticker-to-svg/scripts
 ```
 
 ```bash
