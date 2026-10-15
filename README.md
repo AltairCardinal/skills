@@ -30,8 +30,11 @@ skills/
 ## 安装到本机
 
 Agent 发现 skill 的位置是**扁平的** `<skill 根>\<skill 名>\SKILL.md`；本仓库按类别分了两层，
-所以装的时候需要在中间做一次「扁平化」——用仓库自带的安装脚本，它会给每个 skill 在目标根下
-建一个**目录联接 / 符号链接**，指向仓库里的实际目录。这样改仓库即生效，两端不会分叉。
+所以装的时候需要做一次「扁平化」——用仓库自带的安装脚本，它会在目标根下放一份**真实副本**。
+
+**默认是复制，不是目录联接。** 联接只是省去同步，但源目录一旦被移动、重命名或清理，
+skill 就会静默失效而且不报错；副本自包含、无外部依赖，宁可多跑一次脚本。
+代价是仓库改了要重跑一次安装脚本才会同步到本机。
 
 ```bash
 # Windows（PowerShell）—— 默认装到 %USERPROFILE%\.codex\skills
@@ -40,15 +43,19 @@ Agent 发现 skill 的位置是**扁平的** `<skill 根>\<skill 名>\SKILL.md`�
 # 指定目标根目录
 .\install.ps1 -Target D:\Codex\home\skills
 
-# 跨文件系统、目标不支持联接时：改用复制（注意不再自动同步）
-.\install.ps1 -Copy
+# 仓库有改动后，重新覆盖本机副本
+.\install.ps1 -Force
+
+# 想改用目录联接（更快生效，但源目录移动后会静默失效）
+.\install.ps1 -Link
 ```
 
 ```bash
 # macOS / Linux —— 默认装到 $HOME/.codex/skills
 ./install.sh
 ./install.sh /path/to/skills
-COPIES=1 ./install.sh      # 复制而非链接
+FORCE=1 ./install.sh      # 重新覆盖
+LINKS=1 ./install.sh      # 改用符号链接
 ```
 
 > **注意**：`~/.minimax/skills/` 这样的「各自为政」目录**两个运行时都不扫**。
@@ -63,7 +70,7 @@ COPIES=1 ./install.sh      # 复制而非链接
    - `description` 决定什么请求会触发它，写清**何时该用**、**何时不该用**
 3. 附带文件放 `scripts/` / `references/` / `assets/` 子目录
 4. 在本文件索引表里加一行
-5. 跑一次 `install.ps1` / `install.sh` 挂到本机
+5. 跑一次 `install.ps1 -Force` / `install.sh`（首次安装用不带 `-Force`）同步到本机
 6. 提交 PR
 
 ## 约定
