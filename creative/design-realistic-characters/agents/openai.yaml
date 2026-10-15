@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Realistic Characters"
+  short_description: "Build believable non-default human identities for stories"
+  default_prompt: "Use $design-realistic-characters to design a believable, distinctive human character identity before adding cinematography or performance."
